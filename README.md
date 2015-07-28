@@ -54,7 +54,7 @@ Easily forward a node app's basic health metrics to a local statsd instance.
   Middleware is available as:
 
   ```js
-  app.use(nodeMetrics.selectMiddleware(['middleware1', middleware2']));
+  app.use(nodeMetrics.selectMiddleware(['middleware1', 'middleware2']));
   ```
   Note that providing no argument to selectMiddleware will select all middleware. Also note that adding any middleware will append a 'metrics' object to your req.
   
