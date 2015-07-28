@@ -1,24 +1,28 @@
 # node_metrics
 Easily forward a node app's basic health metrics to a local statsd instance.
 
-## Getting set up
+## Getting Set Up
 1. Install
+
   ```
   npm install node-metrics
   ```
 2. Configure
   Supply a [Lynx](https://github.com/dscape/lynx) instance:
+
   ```js
   var nodeMetrics = require('node-metrics')({ metrics: <your_lync_inst> });
   ```
   Or provide a port and namespace, and let us do the setup:
+
   ```js
   var nodeMetrics = require('node-metrics')({
     port: 8125, //port that your statsd instance lives on
     namespace: 'my_app' //namespace of your choosing
   });
   ```
-3. Collect data!
+  
+## Collecting data!
   node-metrics provides middleware and library functions for collecting basic health metrics. Library functions are available as:
   ```
   nodeMetrics.gauges.<gauge_name>(name, delay)
