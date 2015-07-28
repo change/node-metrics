@@ -4,7 +4,7 @@ Easily forward a node app's basic health metrics to a local statsd instance.
 ## Getting Set Up
 1. Install
 
-  ```
+  ```js
   npm install node-metrics
   ```
 2. Configure
@@ -24,31 +24,36 @@ Easily forward a node app's basic health metrics to a local statsd instance.
   
 ## Collecting data!
   node-metrics provides middleware and library functions for collecting basic health metrics. Library functions are available as:
-  ```
+
+  ```js
   nodeMetrics.gauges.<gauge_name>(name, delay)
   ```
 
   The name param allows you to change the datapoint name that is sent to statsd, and the delay param allows you to change how frequently the metric is gauged (in milliseconds). Note that the nodeConnections gauge requires its third and final argument to be an instance of an http server (as returned by app.listen() ).
   Additionally, you can use:
-  ```
+
+  ```js
   nodeMetrics.gaugeAll(server)
   ```
   This will track metrics for everything with default names. You can modify names and delay times by passes an object:
-  ```
+
+  ```js
   nodeMetrics.gaugeAll(server, {
     nodeConnections: { name: 'custom_node_connection_name', delay: 40000 }
   });
   ```
   
   An easy way to integrate this into your node app is to:
-  ```
+
+  ```js
   var server = app.listen(app.get('port'), function () {
     nodeMetrics.gaugeAll(server);
   });
   ```
   
   Middleware is available as:
-  ```
+
+  ```js
   app.use(nodeMetrics.selectMiddleware(['middleware1', middleware2']));
   ```
   Note that providing no argument to selectMiddleware will select all middleware. Also note that adding any middleware will append a 'metrics' object to your req.
