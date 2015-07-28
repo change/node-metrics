@@ -1,13 +1,14 @@
 # node_metrics
 Easily forward a node app's basic health metrics to a local statsd instance.
 
-## Getting Set Up
+## Getting set up
 1. Install
 
   ```js
   npm install node-metrics
   ```
 2. Configure
+
   Supply a [Lynx](https://github.com/dscape/lynx) instance:
 
   ```js
