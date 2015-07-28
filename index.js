@@ -45,14 +45,21 @@ function NodeMetrics(options) {
       return middlewareHandlers;
     },
 
-    gaugeAll: function(server) {
-      _.forEach(_.values(this.gauges), function(gaugeFunc) {
+    gaugeAll: function(server, specifications) {
+      _.forEach(_.keys(this.gauges), function(name) {
+        var argsForFunc = ['name', 'delay'];
+        _.map(argsForFunc, function(argName) {
+          var specsForFunc = specifications[name];
+          if(!specsForFunc) return null;
+          if(specsForFunc[argName]) return specsForFunc[argName];
+          else return null;
+        });
+        var guageFunc = this.gauges[name];
         if(gaugeFunc.length === 3) {
-          gaugeFunc(server);
-        } else {
-          gaugeFunc();
+          argsForFunc.push(server);
         }
-      });
+        gaugeFunc.apply(this.gauges, argsForFunc);
+      }.bind(this));
     }
 
   });
