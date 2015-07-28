@@ -15,5 +15,10 @@
   "bugs": {
     "url": "https://github.com/change/node_metrics/issues"
   },
-  "homepage": "https://github.com/change/node_metrics"
+  "homepage": "https://github.com/change/node_metrics",
+  "dependencies": {
+    "lodash": "^3.10.0",
+    "lynx": "^0.2.0",
+    "on-headers": "^1.0.0"
+  }
 }

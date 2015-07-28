@@ -60,5 +60,4 @@ function NodeMetrics(options) {
   return nodeMetrics;
 };
 
-
 module.exports = NodeMetrics;
