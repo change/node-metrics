@@ -3,69 +3,69 @@ var dgram = require('dgram'),
     gauges = require('./lib/gauges'),
     middleware = require('./lib/middleware'),
     _ = require('lodash');
+    onHeaders = require('on-headers');
 
-function NodeMetrics(options) {
-  var nodeMetrics = {};
-
-  if(options.metrics) { 
-    nodeMetrics.lynxInst = metrics;
-  }
-  else if(options.port) {
-    var lynxConfig = {
-      socket: dgram.createSocket('udp4')
-    };
-    if(options.namespace) {
-      lynxConfig.namespace = options.namespace;
-    }
-    nodeMetrics.lynxInst = new Lynx('localhost', options.port, lynxConfig); 
-  }
-
-  nodeMetrics = _.extend(nodeMetrics, {
-    gauges: gauges(nodeMetrics.lynxInst),
-    middleware: middleware,
-
-    validateHandlers: function(handlers) {
-      if(!handlers) return _.keys(this.middleware);
-      if(typeof(handlers) !== Array) throw new TypeError('Handlers must be an array of strings.');
-      if(_.intersection(handlers, _.keys(this.middleware)).length !== handlers.length) {
-        throw new Error('Invalid middleware option.');
-      }
-      return handlers;
-    },
-
-    selectMiddleware: function(handlers) {
-      handlers = this.validateHandlers(handlers);
-      var middlewareHandlers = _.map(handlers, function(handlerName) {
-        return this.middleware[handlerName];
-      }.bind(this));
-      middlewareHandlers.unshift(function(req, res, next) {
-        if(!req.metrics) req.metrics = this.lynxInst;
-        next();
-      }.bind(this));
-      return middlewareHandlers;
-    },
-
-    gaugeAll: function(server, specifications) {
-      specifications = specifications || {};
-      _.forEach(_.keys(this.gauges), function(name) {
-        var argsForFunc = ['name', 'delay'];
-        argsForFunc = _.map(argsForFunc, function(argName) {
-          var specsForFunc = specifications[name];
-          if(!specsForFunc) return null;
-          if(_.has(specsForFunc, argName)) return specsForFunc[argName];
-          else return null;
-        });
-        var gaugeFunc = this.gauges[name];
-        if(gaugeFunc.length === 3) {
-          argsForFunc.push(server);
-        }
-        gaugeFunc.apply(this.gauges, argsForFunc);
-      }.bind(this));
-    }
-
-  });
-
-  return nodeMetrics;
+module.exports.eventLoopGauge = function(metrics) {
+  setInterval(function(metrics) {
+    var timer = metrics.createTimer('event_loop_delay');
+    setImmediate(timer.stop.bind(timer));
+  }.bind(null, metrics), 10000);
 };
 
-module.exports = NodeMetrics;
+module.exports.fileDescriptorGauge = function(metrics) {
+  delay = delay ? delay : 30000;
+  name = name ? name : 'file_descriptors';
+
+  var recordConns = function(metrics) {
+    exec('ls -q /proc/' + process.pid + '/fd | wc -l', function(err, data) {
+      var count = Number(data);
+      if (!err && count) {
+        metrics.gauge('file_descriptors', 30000);
+      }
+      setTimeout(recordConns, 30000);
+    });
+  }.bind(null, metrics);
+
+  setTimeout(recordConns, 30000);
+};
+
+module.exports.nodeMemoryGauge = function(metrics) {
+  setInterval(function(metrics) {
+    var memoryUsage = process.memoryUsage();
+    metrics.gauge('memory.rss', memoryUsage.rss);
+    metrics.gauge('memory.heapTotal', memoryUsage.heapTotal);
+    metrics.gauge('memory.heapUsed', memoryUsage.heapUsed);
+  }.bind(null, metrics), 10000);
+};
+
+module.exports.nodeConnectionsGauge = function(metrics, server) {
+
+  var recordConns = function(metrics) {
+    server.getConnections(function(err, count) {
+      if (!err) {
+        metrics.gauge('connections', count);
+      }
+      setTimeout(recordConns, 1000);
+    });
+  }.bind(null, metrics);
+
+  setTimeout(recordConns, 1000);
+};
+
+module.exports.allGauges = function(metrics, server) {
+  module.exports.eventLoopGauge(metrics);
+  module.exports.fileDescriptorGauge(metrics);
+  module.exports.nodeMemoryGauge(metrics);
+  module.exports.nodeConnectionsGauge(metrics, server);
+};
+
+module.exports.requestStatsMiddleware = function(req, res, next) {
+  var startTimeHr = process.hrtime();
+  onHeaders(res, function() {
+    var diff = process.hrtime(startTimeHr),
+      time = diff[0] * 1000 + diff[1] * 1e-6;
+    req.metrics.increment('res_status.' + res.statusCode);
+    req.metrics.timing('res_time', time);
+  });
+  next();
+};
