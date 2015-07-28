@@ -26,7 +26,7 @@ function NodeMetrics(options) {
 
     validateHandlers: function(handlers) {
       if(!handlers) return _.keys(this.middleware);
-      if(typeof(handlers) !== Array) throw new Error('Handlers must be an array of strings.');
+      if(typeof(handlers) !== Array) throw new TypeError('Handlers must be an array of strings.');
       if(_.intersection(handlers, _.keys(this.middleware)).length !== handlers.length) {
         throw new Error('Invalid middleware option.');
       }
@@ -46,15 +46,16 @@ function NodeMetrics(options) {
     },
 
     gaugeAll: function(server, specifications) {
+      specifications = specifications || {};
       _.forEach(_.keys(this.gauges), function(name) {
         var argsForFunc = ['name', 'delay'];
-        _.map(argsForFunc, function(argName) {
+        argsForFunc = _.map(argsForFunc, function(argName) {
           var specsForFunc = specifications[name];
           if(!specsForFunc) return null;
-          if(specsForFunc[argName]) return specsForFunc[argName];
+          if(_.has(specsForFunc, argName)) return specsForFunc[argName];
           else return null;
         });
-        var guageFunc = this.gauges[name];
+        var gaugeFunc = this.gauges[name];
         if(gaugeFunc.length === 3) {
           argsForFunc.push(server);
         }
