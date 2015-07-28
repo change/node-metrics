@@ -1,11 +1,14 @@
 var dgram = require('dgram'),
     Lynx = require('lynx'),
-    Gauges = require('./lib/gauges'),
-    Middleware = require('./lib.middleware');
+    gauges = require('./lib/gauges'),
+    middleware = require('./lib/middleware'),
+    _ = require('lodash');
 
 function NodeMetrics(options) {
+  var nodeMetrics = {};
+
   if(options.metrics) { 
-    this.lynxInst = metrics;
+    nodeMetrics.lynxInst = metrics;
   }
   else if(options.port) {
     var lynxConfig = {
@@ -14,11 +17,45 @@ function NodeMetrics(options) {
     if(options.namespace) {
       lynxConfig.namespace = options.namespace;
     }
-    this.lynxInst = new Lynx('localhost', options.port, lynxConfig); 
+    nodeMetrics.lynxInst = new Lynx('localhost', options.port, lynxConfig); 
   }
 
-  this.gauge =  new Gauges(this.lynxInst);
-  this.middleware = new Middleware(this.lynxInst);
+  nodeMetrics = _.extend(nodeMetrics, {
+    gauges: gauges,
+    middleware: middleware,
+
+    validateHandlers: function(handlers) {
+      if(!handlers) return _.keys(this.middleware);
+      if(typeof(handlers) !== Array) throw new Error('Handlers must be an array of strings.');
+      if(_.intersection(handlers, _.keys(this.middleware)).length !== handlers.length) {
+        throw new Error('Invalid middleware option.');
+      }
+      return handlers;
+    },
+
+    selectMiddleware: function(handlers) {
+      handlers = this.validateHandlers(handlers);
+      var middlewareHandlers = _.map(handlers, function(handlerName) {
+        this.middleware[handlerName];
+      });
+      return middlewareHandlers.unshift(function(req, res, next) {
+        if(!req.metrics) req.metrics = this.lynxInst;
+      }.bind(this));
+    },
+
+    gaugeAll: function(server) {
+      forEach(_.values(this.gauges), function(gaugeFunc) {
+        if(gaugeFunc.length === 3) {
+          gaugeFunc(server);
+        } else {
+          gaugeFunc();
+        }
+      });
+    }
+
+  });
+
+  return nodeMetrics;
 };
 
 
