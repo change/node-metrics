@@ -21,7 +21,7 @@ function NodeMetrics(options) {
   }
 
   nodeMetrics = _.extend(nodeMetrics, {
-    gauges: gauges,
+    gauges: gauges(nodeMetrics.lynxInst),
     middleware: middleware,
 
     validateHandlers: function(handlers) {
@@ -36,15 +36,17 @@ function NodeMetrics(options) {
     selectMiddleware: function(handlers) {
       handlers = this.validateHandlers(handlers);
       var middlewareHandlers = _.map(handlers, function(handlerName) {
-        this.middleware[handlerName];
-      });
-      return middlewareHandlers.unshift(function(req, res, next) {
-        if(!req.metrics) req.metrics = this.lynxInst;
+        return this.middleware[handlerName];
       }.bind(this));
+      middlewareHandlers.unshift(function(req, res, next) {
+        if(!req.metrics) req.metrics = this.lynxInst;
+        next();
+      }.bind(this));
+      return middlewareHandlers;
     },
 
     gaugeAll: function(server) {
-      forEach(_.values(this.gauges), function(gaugeFunc) {
+      _.forEach(_.values(this.gauges), function(gaugeFunc) {
         if(gaugeFunc.length === 3) {
           gaugeFunc(server);
         } else {
