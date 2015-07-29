@@ -1,4 +1,4 @@
-# node_metrics
+# node-metrics
 Easily forward a node app's basic health metrics to a local statsd instance.
 
 ## Getting set up
@@ -20,7 +20,7 @@ Easily forward a node app's basic health metrics to a local statsd instance.
     scope: 'YOUR_NAMESPACE'
   });
   ```
-  
+
 ## Collecting data!
   node-metrics provides middleware and library functions for collecting basic health metrics.
 
@@ -45,7 +45,7 @@ Easily forward a node app's basic health metrics to a local statsd instance.
   require('node-metrics').allGauges(metrics, server);
   ```
 
-  ### Use middleware 
+  ### Use middleware
   Ensure you append your Lynx instance to the req object as req.metrics. Then append middleware like:
 
   ```js

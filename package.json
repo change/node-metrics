@@ -8,14 +8,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/change/node_metrics.git"
+    "url": "git@github.com:change/node-metrics.git"
   },
   "author": "David Bell",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/change/node_metrics/issues"
+    "url": "https://github.com/change/node-metrics/issues"
   },
-  "homepage": "https://github.com/change/node_metrics",
+  "homepage": "https://github.com/change/node-metrics",
   "dependencies": {
     "on-headers": "^1.0.0"
   }
