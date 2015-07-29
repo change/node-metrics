@@ -33,7 +33,7 @@ Easily forward a node app's basic health metrics to a local statsd instance.
   Or for node connections:
 
   ```js
-  require('node-metrics').nodeConnectsGauge(metrics, server);
+  require('node-metrics').nodeConnectionsGauge(metrics, server);
   ```
 
   Where server is an http server instance (as supplied by app.listen() ).
@@ -42,7 +42,7 @@ Easily forward a node app's basic health metrics to a local statsd instance.
   To configure all gauges at once, do:
 
   ```js
-  require('node-metrics').allGuages(metrics, server);
+  require('node-metrics').allGauges(metrics, server);
   ```
 
   ### Use middleware 
