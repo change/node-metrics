@@ -1,9 +1,5 @@
-var dgram = require('dgram'),
-    Lynx = require('lynx'),
-    gauges = require('./lib/gauges'),
-    middleware = require('./lib/middleware'),
-    _ = require('lodash');
-    onHeaders = require('on-headers');
+var onHeaders = require('on-headers'),
+    exec = require('child_process').exec;
 
 module.exports.eventLoopGauge = function(metrics) {
   setInterval(function(metrics) {
@@ -13,9 +9,7 @@ module.exports.eventLoopGauge = function(metrics) {
 };
 
 module.exports.fileDescriptorGauge = function(metrics) {
-  delay = delay ? delay : 30000;
-  name = name ? name : 'file_descriptors';
-
+  
   var recordConns = function(metrics) {
     exec('ls -q /proc/' + process.pid + '/fd | wc -l', function(err, data) {
       var count = Number(data);

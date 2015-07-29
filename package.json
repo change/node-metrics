@@ -1,6 +1,6 @@
 {
   "name": "node-metrics",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "Making reporting basic health metrics to a local statsd instance easy.",
   "main": "index.js",
   "scripts": {
@@ -17,8 +17,6 @@
   },
   "homepage": "https://github.com/change/node_metrics",
   "dependencies": {
-    "lodash": "^3.10.0",
-    "lynx": "^0.2.0",
     "on-headers": "^1.0.0"
   }
 }
