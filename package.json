@@ -2,21 +2,28 @@
   "name": "node-metrics",
   "version": "1.0.9",
   "description": "Making reporting basic health metrics to a local statsd instance easy.",
+  "author": "Change Engineering",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
+
   "repository": {
     "type": "git",
-    "url": "https://github.com/change/node_metrics.git"
+    "url": "git@github.com:change/node-metrics.git",
+    "private": true
   },
-  "author": "David Bell",
-  "license": "MIT",
   "bugs": {
-    "url": "https://github.com/change/node_metrics/issues"
+    "url": "https://github.com/change/node-metrics/issues"
   },
-  "homepage": "https://github.com/change/node_metrics",
+  "homepage": "https://github.com/change/node-metrics",
+
   "dependencies": {
     "on-headers": "^1.0.0"
+  },
+  "devDependencies": {
+    "jscs": "^2.0.0",
+    "jshint": "^2.5.6"
+  },
+  "scripts": {
+    "pretest": "jshint . ; jscs .",
+    "test": "echo \"Error: no test specified\" && exit 1"
   }
 }

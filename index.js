@@ -9,7 +9,6 @@ module.exports.eventLoopGauge = function(metrics) {
 };
 
 module.exports.fileDescriptorGauge = function(metrics) {
-  
   var recordConns = function(metrics) {
     exec('ls -q /proc/' + process.pid + '/fd | wc -l', function(err, data) {
       var count = Number(data);

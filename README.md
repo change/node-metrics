@@ -1,17 +1,36 @@
-# node_metrics
+# node-metrics
+
 Easily forward a node app's basic health metrics to a local statsd instance.
 
-## Getting set up
+
+## Development
+
+Install dependencies:
+
+``` sh
+  npm install
+```
+
+Run tests:
+
+``` sh
+  npm test
+```
+
+
+## Usage
+
 1. Install
 
-  ```js
+  ``` sh
   npm install node-metrics
   ```
+
 2. Configure
 
   Create a [Lynx](https://github.com/dscape/lynx) instance:
 
-  ```js
+  ``` js
   var Lynx = require('lynx'),
       dgram = require('dgram');
 
@@ -20,37 +39,46 @@ Easily forward a node app's basic health metrics to a local statsd instance.
     scope: 'YOUR_NAMESPACE'
   });
   ```
-  
+
+
 ## Collecting data!
-  node-metrics provides middleware and library functions for collecting basic health metrics.
 
-  ### Use an individual gauge
+node-metrics provides middleware and library functions for collecting basic health metrics.
 
-  ```js
+
+### Use an individual gauge
+
+``` js
   require('node-metrics').nodeMemoryGauge(metrics);
-  ```
+```
 
-  Or for node connections:
+Or for node connections:
 
-  ```js
+``` js
   require('node-metrics').nodeConnectionsGauge(metrics, server);
-  ```
+```
 
-  Where server is an http server instance (as supplied by app.listen() ).
+Where server is an http server instance (as supplied by app.listen() ).
 
-  ### Use all gauges
-  To configure all gauges at once, do:
 
-  ```js
+### Use all gauges
+
+To configure all gauges at once, do:
+
+``` js
   require('node-metrics').allGauges(metrics, server);
-  ```
+```
 
-  ### Use middleware 
-  Ensure you append your Lynx instance to the req object as req.metrics. Then append middleware like:
 
-  ```js
+### Use middleware
+
+Ensure you append your Lynx instance to the req object as req.metrics. Then
+append middleware like:
+
+``` js
   app.use(require('node-metrics').requestStatsMiddleware);
-  ```
+```
 
-  Note that for requestStatsByRouteMiddleware, stats will only be logged for a route if req.route is present. Further, your route names will be cleaned of any characters that might interfere with stasd's protocol.
-
+Note that for requestStatsByRouteMiddleware, stats will only be logged for a
+route if req.route is present. Further, your route names will be cleaned of any
+characters that might interfere with stasd's protocol.
