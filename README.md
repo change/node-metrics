@@ -52,3 +52,5 @@ Easily forward a node app's basic health metrics to a local statsd instance.
   app.use(require('node-metrics').requestStatsMiddleware);
   ```
 
+  Note that for requestStatsByRouteMiddleware, stats will only be logged for a route if req.route is present. Also note that your routes will be cleaned of any character that might interfere with stasd's protocol.
+
