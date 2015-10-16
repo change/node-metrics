@@ -13,7 +13,7 @@ module.exports.fileDescriptorGauge = function(metrics) {
     exec('ls -q /proc/' + process.pid + '/fd | wc -l', function(err, data) {
       var count = Number(data);
       if (!err && count) {
-        metrics.gauge('file_descriptors', 30000);
+        metrics.gauge('file_descriptors', count);
       }
       setTimeout(recordConns, 30000);
     });
@@ -70,7 +70,7 @@ module.exports.requestStatsByRouteMiddleware = function(req, res, next) {
       time = diff[0] * 1000 + diff[1] * 1e-6;
     if (req.route && req.route.path) {
       var safePath = req.route.path.replace(/\||:|"|'/g, '');
-      req.metrics.increment('r.' + safePath + '.status.' + res.statusCode);
+      req.metrics.increment('route.' + safePath + '.status.' + res.statusCode);
     }
   });
   next();
