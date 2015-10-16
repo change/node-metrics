@@ -13,7 +13,7 @@ module.exports.fileDescriptorGauge = function(metrics) {
     exec('ls -q /proc/' + process.pid + '/fd | wc -l', function(err, data) {
       var count = Number(data);
       if (!err && count) {
-        metrics.gauge('file_descriptors', 30000);
+        metrics.gauge('file_descriptors', count);
       }
       setTimeout(recordConns, 30000);
     });
