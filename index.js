@@ -70,7 +70,7 @@ module.exports.requestStatsByRouteMiddleware = function(req, res, next) {
       time = diff[0] * 1000 + diff[1] * 1e-6;
     if (req.route && req.route.path) {
       var safePath = req.route.path.replace(/\||:|"|'/g, '');
-      req.metrics.increment('r.' + safePath + '.status.' + res.statusCode);
+      req.metrics.increment('route.' + safePath + '.status.' + res.statusCode);
     }
   });
   next();
