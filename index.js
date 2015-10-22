@@ -68,10 +68,13 @@ module.exports.requestStatsByRouteMiddleware = function(req, res, next) {
   onHeaders(res, function() {
     var diff = process.hrtime(startTimeHr),
       time = diff[0] * 1000 + diff[1] * 1e-6;
+
     if (req.route && req.route.path) {
       var safePath = req.route.path.replace(/\||:|"|'/g, '');
       req.metrics.increment('route.' + safePath + '.status.' + res.statusCode);
+      req.metrics.timing('route.' + safePath + '.time', time);
     }
   });
+
   next();
 };
