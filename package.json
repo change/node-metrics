@@ -1,6 +1,6 @@
 {
   "name": "node-metrics",
-  "version": "1.0.10",
+  "version": "1.0.11",
   "description": "Making reporting basic health metrics to a local statsd instance easy.",
   "author": "Change Engineering",
   "main": "index.js",
