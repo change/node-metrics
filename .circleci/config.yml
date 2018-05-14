@@ -1,0 +1,15 @@
+version: 2
+jobs:
+  build:
+    parallelism: 1
+    working_directory: ~/change/node-metrics
+    docker:
+      - image: circleci/node:6-stretch
+    steps:
+      - checkout
+      - run: if [ -z "${NODE_ENV:-}" ]; then export NODE_ENV=test; fi
+      - run: export PATH="~/change/node-metrics/node_modules/.bin:$PATH"
+      - run: npm install
+      - run: npm test
+      - store_test_results:
+          path: /tmp/circleci-test-results
