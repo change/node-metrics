@@ -4,7 +4,7 @@ jobs:
     parallelism: 1
     working_directory: ~/change/node-metrics
     docker:
-      - image: circleci/node:6-stretch
+      - image: cimg/node:14.17
     steps:
       - checkout
       - run: if [ -z "${NODE_ENV:-}" ]; then export NODE_ENV=test; fi
